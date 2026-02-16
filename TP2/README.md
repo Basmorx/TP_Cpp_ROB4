@@ -17,6 +17,10 @@ Le code est organisé selon le principe de séparation déclaration/implémentat
 * **tp2ex1.cpp** : Fichier principal contenant le `main`, les tests et les fonctions auxiliaires (`afficheinverse`, `inversemajuscule`).
 * **pile.h** : (Exercice 4) Implémentation complète du Template de classe `Pile<T>`.
 
+##  Libertée prise :
+
+* `inversemajuscule` : Dans cette fonction le mot est inversé 2 fois (pour revenir droit) et les minuscules -> majucules ansi que les majuscules -> minuscule exemple `Bastien` -> `bASTIEN`  
+
 ## Compilation
 
 ```
