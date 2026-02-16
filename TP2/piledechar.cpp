@@ -41,10 +41,11 @@ int PileDeChar::CompterElements(){
 
 void PileDeChar::AffichePile() {
     std::cout << "Contenu de la pile : ";
+    std::cout << "[ ";
     for (int i = 0; i < mSommet; i++) {
         std::cout << mPile[i] << " ";
     }
-    std::cout << std::endl;
+    std::cout << "]" << std::endl;
 }
 
 void PileDeChar::EmpilerElem(char element) {

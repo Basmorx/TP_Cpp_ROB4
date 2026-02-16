@@ -12,7 +12,7 @@ public:
 
     PileDeChar(const PileDeChar& other) ;
 
-    ~PileDeChar() { delete[] mPile; }
+    ~PileDeChar();
 
     int CompterElements();
 
