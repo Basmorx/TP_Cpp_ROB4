@@ -12,6 +12,7 @@ void afficheInverse(PiledeChar p) {
     cout << endl;
 }
 
+
 int main() {
     char buffer[80];
     cout << "Entrez un mot : ";
