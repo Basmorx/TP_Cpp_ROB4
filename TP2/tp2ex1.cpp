@@ -5,9 +5,9 @@
 using namespace std;
 
 // Affiche et vide la pile (passage par valeur pour ne pas modifier l'originale)
-void afficheInverse(PiledeChar p) {
-    while (p.compterElements() > 0) {
-        cout << p.desempilerElem();
+void afficheInverse(PileDeChar p) {
+    while (p.CompterElements() > 0) {
+        cout << p.DesempilerElem();
     }
     cout << endl;
 }
@@ -17,10 +17,10 @@ int main() {
     cout << "Entrez un mot : ";
     cin.getline(buffer, 79); // Utilisation de getline pour éviter les résidus 
 
-    PiledeChar maPile;
+    PileDeChar maPile;
     for (int i = 0; buffer[i] != '\0'; ++i) {
-        maPile.empilerElem(buffer[i]);
-        maPile.afficherPile(); // Surveillance de l'évolution 
+        maPile.EmpilerElem(buffer[i]);
+        maPile.AffichePile(); // Surveillance de l'évolution 
     }
 
     cout << "Message a l'envers : ";
