@@ -26,6 +26,3 @@ g++ Exercice2.cpp Personne.cpp -o exo2
 ```bash
 ./exo2
 ```
-
-## 
-
