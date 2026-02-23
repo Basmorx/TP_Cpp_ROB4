@@ -65,7 +65,6 @@ void Personne::setAge(int a) {
 // --- EXERCICE 3 : Opérateur d'affectation ---
 
 Personne& Personne::operator=(const Personne& other) {
-    // Éviter l'auto-affectation (ex: p1 = p1)
     if (this != &other) {
         // 1. Libérer l'ancienne mémoire
         delete[] nom;
