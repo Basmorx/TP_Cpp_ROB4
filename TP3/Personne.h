@@ -1,3 +1,5 @@
+#ifndef PERSONNE_H
+#define PERSONNE_H
 #include <iostream>
 #include <cstring>
 
@@ -23,3 +25,4 @@ public:
 
 
 
+#endif
