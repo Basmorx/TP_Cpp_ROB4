@@ -35,27 +35,32 @@ Personne::~Personne() {
     delete age;
 }
 
-// Méthode d'affichage
+// --- Méthodes ---
 
 void Personne::afficher() const {
     std::cout << "Nom: " << nom << ", Prenom: " << prenom << ", Age: " << *age << std::endl;
 }
 
-// Getter et Setter
+const char* Personne::getNom() const { return nom; }
+const char* Personne::getPrenom() const { return prenom; }
+int Personne::getAge() const { return *age; }
 
 void Personne::setNom(const char* n) {
-        delete[] nom;
-        nom = new char[strlen(n) + 1]; strcpy(nom, n);
-    }
-    void Personne::setPrenom(const char* p) {
-        delete[] prenom;
-        prenom = new char[strlen(p) + 1]; strcpy(prenom, p);
-    }
-    void Personne::setAge(int a) { *age = a; }
-    
-    const char* Personne::getNom() const { return nom; }
-    const char* Personne::getPrenom() const { return prenom; }
-    int Personne::getAge() const { return *age; }
+    delete[] nom; 
+    nom = new char[strlen(n) + 1];
+    strcpy(nom, n);
+}
+
+void Personne::setPrenom(const char* p) {
+    delete[] prenom;
+    prenom = new char[strlen(p) + 1];
+    strcpy(prenom, p);
+}
+
+void Personne::setAge(int a) {
+    *age = a;
+
+
 
 // --- EXERCICE 3 : Opérateur d'affectation ---
 
@@ -77,28 +82,3 @@ Personne& Personne::operator=(const Personne& other) {
     return *this;
 }
 
-// --- Méthodes (Vos implémentations corrigées) ---
-
-void Personne::afficher() const {
-    std::cout << "Nom: " << nom << ", Prenom: " << prenom << ", Age: " << *age << std::endl;
-}
-
-const char* Personne::getNom() const { return nom; }
-const char* Personne::getPrenom() const { return prenom; }
-int Personne::getAge() const { return *age; }
-
-void Personne::setNom(const char* n) {
-    delete[] nom; // Toujours libérer avant de réallouer
-    nom = new char[strlen(n) + 1];
-    strcpy(nom, n);
-}
-
-void Personne::setPrenom(const char* p) {
-    delete[] prenom;
-    prenom = new char[strlen(p) + 1];
-    strcpy(prenom, p);
-}
-
-void Personne::setAge(int a) {
-    *age = a; // age est déjà alloué par le constructeur, on modifie juste la valeur
-}
