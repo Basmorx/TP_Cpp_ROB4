@@ -1,36 +1,12 @@
 #include "Personne.h"
 
-
-class Personne {
-private:
-    char* nom;
-    char* prenom;
-    int* age;
-public:
-
-    Personne() ;
-
-    Personne(const char* nom, const char* prenom, int age) ;
-
-    Personne(const Personne& other) ;
-
-    ~Personne() ;
-
-    void afficher() const ;
-
-    const char* getNom() const;
-
-    const char* getPrenom() const;
-
-    int getAge() const;
-
-    void setNom(const char* n);
-
-    void setPrenom(const char* p);
-
-    void setAge(int a);
-};
-
+Personne::Personne() {
+    nom = new char[1];
+    prenom = new char[1];
+    age = new int(0);
+    nom[0] = '\0';
+    prenom[0] = '\0';
+}
 
 void Personne::afficher() const {
     std::cout << "Nom: " << nom << ", Prenom: " << prenom << ", Age: " << *age << std::endl;
