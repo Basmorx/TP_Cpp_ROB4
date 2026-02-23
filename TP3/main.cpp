@@ -10,8 +10,8 @@ int main() {
     // Allocation dynamique du tableau avec initialisations variées
     Personne* tabPersonnes = new Personne[3]{
         Personne(), 
-        Personne("Dupont", "Jean", 35),
-        Personne("Martin", "Alice", 28)
+        Personne("Orieux", "Jean", 35),
+        Personne("Tuili", "Silvia", 24)
     };
 
     for (int i = 0; i < 3; ++i) {
@@ -31,7 +31,7 @@ int main() {
     cout << "P1: "; p1.afficher(); cout << endl;
     cout << "P2: "; p2.afficher(); cout << endl;
 
-    p1.setAge(99); // Modification pour prouver l'indépendance de la mémoire
+    p1.setAge(99); // Preuve indep mem
 
     cout << "Apres modification de p1 (p2 ne doit pas changer) :" << endl;
     cout << "P1: "; p1.afficher(); cout << endl;
@@ -40,11 +40,11 @@ int main() {
     cout << "\n====== EXERCICE 5 : TABLEAU D'ETUDIANTS ======" << endl;
     
     Etudiant* tabEtudiants = new Etudiant[2]{
-        Etudiant("Bernard", "Lucie", 20, 3),
-        Etudiant("Petit", "Thomas", 22, 2)
+        Etudiant("Muzaton", "Mattéo", 20, 3),
+        Etudiant("Moreaux", "Bastien", 22, 2)
     };
 
-    // Ajout de quelques notes
+    // Ajout des notes
     tabEtudiants[0].setNote(0, 15);
     tabEtudiants[0].setNote(1, 12);
     tabEtudiants[0].setNote(2, 18);
