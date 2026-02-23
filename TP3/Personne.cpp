@@ -59,7 +59,7 @@ void Personne::setPrenom(const char* p) {
 
 void Personne::setAge(int a) {
     *age = a;
-
+}
 
 
 // --- EXERCICE 3 : Opérateur d'affectation ---
