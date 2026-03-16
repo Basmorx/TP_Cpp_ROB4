@@ -13,3 +13,21 @@
     2.a. Ligature dynamique : Grâce au mot-clé virtual, l'appel à getTransform() via un pointeur CJoint* va dynamiquement résoudre le type réel de l'objet pointé à l'exécution et appeler la bonne redéfinition (ex: CJointRevolute::getTransform()). Si la méthode n'était pas virtual, c'est la méthode de la classe de base (le type du pointeur) qui serait appelée par défaut (ligature statique), ce qui ici poserait problème car elle est virtuelle pure (ce qui empêcherait d'ailleurs l'instanciation ou créerait une erreur de compilation).
 
     2.b. Clonage polymorphique : La méthode clone() est indispensable pour effectuer une copie profonde d'objets polymorphiques. La classe CBras stockera des pointeurs vers la classe de base (CJoint), et le constructeur de copie standard ne connaîtrait pas le type dérivé exact à instancier lors de la copie du bras, d'où la nécessité du pattern Prototype (clone).
+
+### Scéance 2
+
+1.a. Pourquoi ```addJoint()``` prend un unique_ptr par valeur et requiert `std::move()` à l'appel ?
+Un unique_ptr garantit une propriété exclusive (il ne peut y avoir qu'un seul propriétaire de la ressource en mémoire). Le passer par valeur avec `std::move()` force le développeur à transférer explicitement cette propriété à la classe CBras, évitant ainsi toute copie accidentelle et garantissant qu'il n'y aura pas de fuite mémoire.
+
+1.b. Pourquoi CBras n'est-elle pas copiable par défaut ? La classe contient un `std::vector<std::unique_ptr<CJoint>>`. Puisque les unique_ptr interdisent la copie par essence (pour maintenir la propriété unique), le vecteur qui les contient, et par extension la classe CBras, voient leur constructeur de copie désactivé par défaut par le compilateur.
+
+1.c. Type de retour de `operator<<` et pourquoi retourner `std::ostream&` ? 
+Il retourne une référence vers le flux d'entrée (`std::ostream&`). Cela permet le chaînage des appels, ce qui te laisse écrire des choses comme `cout << bras << endl;` sur une seule ligne .
+
+2.a. Comparaison A∗B (Eigen) vs boucle triple manuelle : 
+
+Lisibilité : Le code est beaucoup plus clair et concis (une ligne au lieu de boucles imbriquées).
+
+Performance : Eigen est fortement optimisée et utilise la vectorisation SIMD du processeur pour faire les calculs mathématiques beaucoup plus rapidement qu'une boucle standard.
+
+2.b. Équivalent Matrix4d dans Pinocchio et comparaison : La méthode de pinocchio::SE3 qui retourne l'équivalent est toHomogeneousMatrix(). Pour comparer numériquement les deux résultats, on vérifie que l'erreur de Frobenius entre les deux matrices est inférieure à une certaine tolérance (ex: <10−10), ou on utilise la méthode isApprox() d'Eigen.
