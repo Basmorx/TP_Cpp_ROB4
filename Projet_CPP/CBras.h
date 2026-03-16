@@ -63,7 +63,7 @@ public:
     // INTERFACE EIGEN::VECTORXD 
     // ==========================================
     
-    Eigen::VectorXd get() const { // [cite: 89]
+    Eigen::VectorXd get() const { 
         Eigen::VectorXd q(getNbJoints());
         for (size_t i = 0; i < getNbJoints(); ++i) {
             q[i] = joints_[i]->getQ();
@@ -71,16 +71,16 @@ public:
         return q;
     }
 
-    void set(const Eigen::VectorXd& q) { // [cite: 90]
+    void set(const Eigen::VectorXd& q) {
         if (q.size() != getNbJoints()) {
-            throw std::invalid_argument("Taille du vecteur incorrecte"); // [cite: 90]
+            throw std::invalid_argument("Taille du vecteur incorrecte");
         }
         for (size_t i = 0; i < getNbJoints(); ++i) {
             joints_[i]->setQ(q[i]);
         }
     }
 
-    Eigen::VectorXd random() const { // [cite: 91]
+    Eigen::VectorXd random() const {
         Eigen::VectorXd q(getNbJoints());
         for (size_t i = 0; i < getNbJoints(); ++i) {
             double min = joints_[i]->getQMin();
