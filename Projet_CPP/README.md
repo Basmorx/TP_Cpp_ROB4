@@ -31,3 +31,19 @@ Lisibilité : Le code est beaucoup plus clair et concis (une ligne au lieu de bo
 Performance : Eigen est fortement optimisée et utilise la vectorisation SIMD du processeur pour faire les calculs mathématiques beaucoup plus rapidement qu'une boucle standard.
 
 2.b. Équivalent Matrix4d dans Pinocchio et comparaison : La méthode de pinocchio::SE3 qui retourne l'équivalent est toHomogeneousMatrix(). Pour comparer numériquement les deux résultats, on vérifie que l'erreur de Frobenius entre les deux matrices est inférieure à une certaine tolérance (ex: <10−10), ou on utilise la méthode isApprox() d'Eigen.
+
+### Scéance 3
+
+1.a. Copie et clone() : Un unique_ptr est par nature incopiable pour garantir un propriétaire unique. Pour copier le bras, on doit copier son contenu. De plus, comme le vecteur contient des pointeurs vers la classe de base (CJoint), appeler le constructeur de copie standard ne ferait que "couper" les objets dérivés (Object Slicing). La méthode clone() permet de faire une copie profonde (Deep Copy) en recréant dynamiquement le bon type dérivé.
+
+1.b. L'idiome Copy-and-Swap : Il consiste à créer une copie temporaire de l'objet, puis à échanger (swap) ses données avec l'objet actuel. Cela offre la garantie d'exception forte : si la copie plante (ex: plus de mémoire), l'objet original n'est absolument pas modifié ni corrompu.
+
+1.c. Déplacement (= default) : Oui, c'est suffisant. Transférer (déplacer) un std::vector de unique_ptr ne fait que déplacer les pointeurs internes d'un objet à l'autre sans réallouer de mémoire. C'est rapide et totalement sécurisé.
+
+1.d. Destructeur (= default) : Oui, c'est suffisant. À la destruction de CBras, son std::vector est détruit. Le vecteur va détruire ses éléments dans l'ordre inverse de leur création (du dernier au premier). Les unique_ptr libéreront alors automatiquement la mémoire de chaque joint.
+
+2.a. Pourquoi Eigen::VectorXd ? Pinocchio utilise les types d'Eigen plutôt que std::vector<double> pour bénéficier d'opérations mathématiques directes (comme norm(), dot()) et des optimisations matérielles (vectorisation SIMD) qui accélèrent drastiquement les calculs.
+
+3.a. Templates dans le .h : Un template n'est pas du code exécutable, c'est un "plan de construction" pour le compilateur. Pour instancier la classe avec un type spécifique (ex: double), le compilateur doit avoir accès à l'intégralité du code source au moment de la compilation.
+
+3.b. typename T vs size_t N : T est un paramètre de type (il indique si l'on stocke des int, double, etc.), tandis que N est un paramètre non-type (une valeur constante évaluée à la compilation pour définir la taille exacte du tableau en mémoire).
