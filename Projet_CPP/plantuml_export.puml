@@ -1,0 +1,53 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+abstract class CJoint {
+  # q_ : double
+  # qMin_ : double
+  # qMax_ : double
+  + CJoint(qMin : double, qMax : double)
+  + ~CJoint()
+  + setQ(q : double) : void
+  + getQ() : double
+  + getQMin() : double
+  + getQMax() : double
+  + {abstract} getTransform() : Mat4
+  + {abstract} getTypeName() : string
+  + {abstract} clone() : unique_ptr<CJoint>
+}
+
+class CJointRevolute {
+  - dx_ : double
+  + CJointRevolute(qMin : double, qMax : double, dx : double)
+  + getTransform() : Mat4
+  + getTypeName() : string
+  + clone() : unique_ptr<CJoint>
+}
+
+class CJointPrismatic {
+  + CJointPrismatic(qMin : double, qMax : double)
+  + getTransform() : Mat4
+  + getTypeName() : string
+  + clone() : unique_ptr<CJoint>
+}
+
+class CBras {
+  - joints_ : vector<unique_ptr<CJoint>>
+  + CBras()
+  + ~CBras()
+  + CBras(other : const CBras&)
+  + operator=(other : CBras) : CBras&
+  + addJoint(joint : unique_ptr<CJoint>) : void
+  + getNbJoints() : size_t
+  + getJoint(index : size_t) : CJoint*
+  + computeFK() : Mat4
+  + get() : VectorXd
+  + set(q : const VectorXd&) : void
+  + random() : VectorXd
+}
+
+CJoint <|-- CJointRevolute
+CJoint <|-- CJointPrismatic
+CBras *--> "0..*" CJoint : contient >
+
+@enduml

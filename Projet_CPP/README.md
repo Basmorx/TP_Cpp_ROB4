@@ -55,7 +55,3 @@ Le Model contient la description physique du robot (longueurs, masses) qui ne ch
 
 2.c. Différence entre modèle cinématique et modèle de collision (hpp-fcl) : 
 Le modèle cinématique n'est qu'un "squelette" mathématique (des points et des axes) utilisé pour calculer des positions. Le modèle de collision, basé sur hpp-fcl, enveloppe ce squelette avec des volumes 3D réels (des cylindres, des maillages de la carrosserie du robot). La méthode computeCollisions()  sert donc à vérifier si ces volumes 3D se rentrent dedans (auto-collision) ou percutent l'environnement, ce qui est indispensable avant d'envoyer la commande aux moteurs réels pour ne pas casser le robot.
-
-
-
-
