@@ -5,27 +5,28 @@
 #include "CBras.h"
 
 
-// Fonction Bonus : Régulateur Proportionnel (Cinématique Inverse)
+// Fonction Bonus : Régulateur Proportionnel avec Pseudo-Inverse (Cinématique Inverse)
 void regulateurProportionnel(CBras& bras, const Eigen::Vector2d& cible) {
-    double Kp = 0.2; // Gain proportionnel
+    double Kp = 0.5; 
     double epsilon = 1e-4; 
     int max_iter = 1000;
     int iter = 0;
 
     std::cout << "--- Demarrage du Regulateur vers cible (" << cible(0) << ", " << cible(1) << ") ---\n";
 
-    // 1. ASTUCE : On donne une posture initiale "pliée" pour éviter le minimum local
-    bras.getJoint(0)->setQ(M_PI / 4.0); // On lève l'épaule
-    bras.getJoint(1)->setQ(M_PI / 4.0); // On plie franchement le coude
-    bras.getJoint(2)->setQ(0.0);
-    bras.getJoint(3)->setQ(0.0);
+    // Posture de départ pour éviter les minimums locaux (bras totalement tendu)
+    for (size_t i = 0; i < bras.getNbJoints(); ++i) {
+        if (bras.getJoint(i)->getTypeName() == "Revolute") {
+            bras.getJoint(i)->setQ(0.1); 
+        }
+    }
 
     while (iter < max_iter) {
         Mat4 T = bras.computeFK();
         Eigen::Vector2d pos(T(0, 3), T(1, 3));
         Eigen::Vector2d e = cible - pos; 
         
-        // Condition d'arrêt : ||e|| < 0.01 m
+        // Cible atteinte !
         if (e.norm() < 0.01) {
             std::cout << "-> Cible atteinte en " << iter << " iterations ! (Erreur finale: " << std::fixed << std::setprecision(4) << e.norm() << " m)\n";
             std::cout << "-> Configuration finale : \n" << bras << "\n";
@@ -37,7 +38,7 @@ void regulateurProportionnel(CBras& bras, const Eigen::Vector2d& cible) {
             CJoint* joint = bras.getJoint(i);
             double q_orig = joint->getQ();
             
-            // 2. AMÉLIORATION : Dérivée Centrale (plus stable sur les butées)
+            // Dérivée Centrale : on regarde un peu en avant et un peu en arrière
             double q_plus = std::min(q_orig + epsilon, joint->getQMax());
             double q_minus = std::max(q_orig - epsilon, joint->getQMin());
             
@@ -47,32 +48,39 @@ void regulateurProportionnel(CBras& bras, const Eigen::Vector2d& cible) {
             joint->setQ(q_minus);
             Eigen::Vector2d pos_minus = bras.computeFK().block<2,1>(0,3);
             
+            // Si l'articulation est totalement bloquée par ses butées
             if (q_plus - q_minus < 1e-6) {
-                J.col(i) = Eigen::Vector2d(0, 0); // Articulation totalement bloquée
+                J.col(i) = Eigen::Vector2d(0, 0); 
             } else {
                 J.col(i) = (pos_plus - pos_minus) / (q_plus - q_minus);
             }
-            joint->setQ(q_orig);
+            joint->setQ(q_orig); // On remet l'angle d'origine
         }
 
-        Eigen::VectorXd delta_theta = Kp * J.transpose() * e;
+        // LA MAGIE EIGEN : Pseudo-Inverse (complète décomposition orthogonale)
+        Eigen::VectorXd delta_theta = J.completeOrthogonalDecomposition().solve(e);
+        delta_theta *= Kp; 
 
-        // 3. SÉCURITÉ : On bride la vitesse max pour éviter les oscillations (overshoot)
-        if (delta_theta.norm() > 0.05) {
-            delta_theta = delta_theta.normalized() * 0.05;
+        // Bride de sécurité pour éviter les mouvements trop violents
+        if (delta_theta.norm() > 0.1) {
+            delta_theta = delta_theta.normalized() * 0.1;
         }
 
-        // Mise à jour
+        // Application de la commande
         for (size_t i = 0; i < bras.getNbJoints(); ++i) {
             CJoint* joint = bras.getJoint(i);
             double new_q = joint->getQ() + delta_theta(i);
+            // Saturation stricte sur les butées
             new_q = std::max(joint->getQMin(), std::min(new_q, joint->getQMax()));
             joint->setQ(new_q);
         }
         iter++;
     }
-    std::cout << "-> Configuration finale : \n" << bras << "\n";
+    
     std::cout << "-> Echec : Cible non atteinte apres " << max_iter << " iterations.\n";
+    Mat4 T_final = bras.computeFK();
+    Eigen::Vector2d pos_final(T_final(0, 3), T_final(1, 3));
+    std::cout << "Distance restante : " << (cible - pos_final).norm() << " m\n";
 }
 
 
@@ -153,8 +161,8 @@ int main() {
     bras.getJoint(2)->setQ(0.0);
     bras.getJoint(3)->setQ(0.0);
 
-    // On crée une cible (x*, y*) atteignable !
-    Eigen::Vector2d cible_xy(0.50, 0.10); 
+    // Cible atteignable sans casser le coude !
+    Eigen::Vector2d cible_xy(0.55, 0.10); 
     regulateurProportionnel(bras, cible_xy);
 
     return 0;
