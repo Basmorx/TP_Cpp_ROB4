@@ -3,7 +3,8 @@
 #include "CBras.h"
 #include "CJoint.h"
 
-// a. computeFK() sur un bras vide retourne I4 
+// computeFK() sur un bras vide retourne I4 
+
 TEST(CBrasTest, ComputeFKEmptyArm) {
     CBras bras;
     Mat4 T = bras.computeFK();
@@ -13,7 +14,11 @@ TEST(CBrasTest, ComputeFKEmptyArm) {
     EXPECT_TRUE(T.isApprox(I4, 1e-10));
 }
 
-// b. 1 joint rotatif (theta=0, dx=0.5m) : vérifier l'effecteur en (0.5, 0, 0) 
+
+
+
+// 1 joint rotatif (theta=0, dx=0.5m) : vérifier l'effecteur en (0.5, 0, 0) 
+
 TEST(CBrasTest, ComputeFKOneRevoluteJoint) {
     CBras bras;
     
@@ -31,7 +36,11 @@ TEST(CBrasTest, ComputeFKOneRevoluteJoint) {
     EXPECT_TRUE(translation.isApprox(expected, 1e-10));
 }
 
-// c. getJoint(i) lève std::out_of_range pour i >= N 
+
+
+
+// getJoint(i) lève std::out_of_range pour i >= N 
+
 TEST(CBrasTest, GetJointOutOfRange) {
     CBras bras;
     
@@ -45,6 +54,8 @@ TEST(CBrasTest, GetJointOutOfRange) {
     EXPECT_NO_THROW(bras.getJoint(0));
     EXPECT_THROW(bras.getJoint(1), std::out_of_range);
 }
+
+
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);

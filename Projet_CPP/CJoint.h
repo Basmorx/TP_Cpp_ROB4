@@ -9,7 +9,7 @@
 using Mat4 = Eigen::Matrix4d;
 
 // ==========================================
-// 1. Classe abstraite CJoint
+// Classe abstraite CJoint
 // ==========================================
 class CJoint {
 protected:
@@ -43,7 +43,7 @@ public:
 };
 
 // ==========================================
-// 2. Classe dérivée CJointRevolute
+// Classe dérivée CJointRevolute
 // ==========================================
 class CJointRevolute : public CJoint {
 private:
@@ -75,7 +75,7 @@ public:
 };
 
 // ==========================================
-// 3. Classe dérivée CJointPrismatic
+// Classe dérivée CJointPrismatic
 // ==========================================
 class CJointPrismatic : public CJoint {
 public:
