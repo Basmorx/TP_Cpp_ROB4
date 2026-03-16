@@ -47,3 +47,15 @@ Performance : Eigen est fortement optimisée et utilise la vectorisation SIMD du
 3.a. Templates dans le .h : Un template n'est pas du code exécutable, c'est un "plan de construction" pour le compilateur. Pour instancier la classe avec un type spécifique (ex: double), le compilateur doit avoir accès à l'intégralité du code source au moment de la compilation.
 
 3.b. typename T vs size_t N : T est un paramètre de type (il indique si l'on stocke des int, double, etc.), tandis que N est un paramètre non-type (une valeur constante évaluée à la compilation pour définir la taille exacte du tableau en mémoire).
+
+### Scéance 4
+
+2.b. Pinocchio découple Model (lecture seule) et Data (mutable). Quel intérêt en multithreading ? 
+Le Model contient la description physique du robot (longueurs, masses) qui ne change jamais. Puisqu'il est en lecture seule (const), plusieurs threads (ex: un pour l'affichage 3D, un pour la physique, un pour le calcul de trajectoire) peuvent le lire en même temps sans risque de blocage ni besoin de mutex. À l'inverse, Data contient les résultats de calculs temporaires qui changent à chaque instant. En donnant une instance Data propre à chaque thread, ils peuvent tous calculer en parallèle sans écraser les données des autres (absence de data race).
+
+2.c. Différence entre modèle cinématique et modèle de collision (hpp-fcl) : 
+Le modèle cinématique n'est qu'un "squelette" mathématique (des points et des axes) utilisé pour calculer des positions. Le modèle de collision, basé sur hpp-fcl, enveloppe ce squelette avec des volumes 3D réels (des cylindres, des maillages de la carrosserie du robot). La méthode computeCollisions()  sert donc à vérifier si ces volumes 3D se rentrent dedans (auto-collision) ou percutent l'environnement, ce qui est indispensable avant d'envoyer la commande aux moteurs réels pour ne pas casser le robot.
+
+
+
+
