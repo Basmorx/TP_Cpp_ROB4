@@ -5,20 +5,20 @@ abstract class CJoint {
   # q_ : double
   # qMin_ : double
   # qMax_ : double
-  + CJoint(qMin : double, qMax : double)
-  + ~CJoint()
-  + setQ(q : double) : void
-  + getQ() : double
+  + CJoint(qMin : double, qMax : double)            % 
+  + ~CJoint()                                       % destructeur
+  + setQ(q : double) : void                         % Modifie la valeur de l'articulation
+  + getQ() : double                                 % Lit les attribus protégés de la classe
   + getQMin() : double
   + getQMax() : double
-  + {abstract} getTransform() : Mat4
-  + {abstract} getTypeName() : string
-  + {abstract} clone() : unique_ptr<CJoint>
+  + {abstract} getTransform() : Mat4                % Renvoie la matrice de transformation homogène de l'articulation 
+  + {abstract} getTypeName() : string               % Demande le type de l'articulation
+  + {abstract} clone() : unique_ptr<CJoint>         % 
 }
 
 class CJointRevolute {
   - dx_ : double
-  + CJointRevolute(qMin : double, qMax : double, dx : double)
+  + CJointRevolute(qMin : double, qMax : double, dx : double)         
   + getTransform() : Mat4
   + getTypeName() : string
   + clone() : unique_ptr<CJoint>
@@ -35,7 +35,7 @@ class CBras {
   - joints_ : vector<unique_ptr<CJoint>>
   + CBras()
   + ~CBras()
-  + CBras(other : const CBras&)
+  + CBras(other : const CBras&)                             %
   + operator=(other : CBras) : CBras&
   + addJoint(joint : unique_ptr<CJoint>) : void
   + getNbJoints() : size_t
