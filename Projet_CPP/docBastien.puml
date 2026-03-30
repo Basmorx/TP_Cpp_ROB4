@@ -1,0 +1,57 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+abstract class CJoint {
+  # q_ : double
+  # qMin_ : double
+  # qMax_ : double
+
+  + CJoint(qMin : double, qMax : double)                    % constructeur par default
+  + virtual ~CJoint()                                       % destructeur
+  + setQ(q : double) : void                                 % Modifie la valeur de l'articulation
+  + getQ() : double                                         % Lit les attribus protégés de la classe
+  + getQMin() : double                                      % Prends la valeur minimale du joint
+  + getQMax() : double                                      % Prends la valeur maximale du joint
+  + virtual {abstract} getTransform() : Mat4                % Renvoie la matrice de transformation homogène de l'articulation 
+  + virtual {abstract} getTypeName() : string               % Demande le type de l'articulation
+  + virtual {abstract} clone() : unique_ptr<CJoint>         % Constructeur de copie
+}
+
+class CJointRevolute {
+  - dx_ : double                                                      % Décalage avec le joint adjacent
+
+  + CJointRevolute(qMin : double, qMax : double, dx : double)         % constructeur par default
+  + getTransform() : Mat4                                             % Renvoie la matrice homogène de transformation
+  + getTypeName() : string                                            % Renvoie le type du joint
+  + clone() : unique_ptr<CJoint>                                      % constructeur de copie
+}
+
+class CJointPrismatic {
+
+  + CJointPrismatic(qMin : double, qMax : double)                     % constructeur par default
+  + getTransform() : Mat4                                             % Renvoie la matrice homogène de transformation
+  + getTypeName() : string                                            % Renvoie le type du joint
+  + clone() : unique_ptr<CJoint>                                      % constructeur de copie
+}
+
+class CBras {
+  - joints_ : vector<unique_ptr<CJoint>>          
+  + CBras()                                                 % Constructeur par default
+  + ~CBras()                                                % Destructeur par default
+  + CBras(other : const CBras& other)                       % constructeur de copie
+  + CBras(CBras&& other) noexcept = default                 % Constructeur de déplacement
+  + operator=(other : CBras) : CBras&                       % Opérateur d'affectation par copie : copy and swap
+  + addJoint(joint : unique_ptr<CJoint>) : void             % Ajoute un joint au tableau joints_
+  + size_t getNbJoints() : size_t                           % Renvoie le nombre de joint sur le bras
+  + getJoint(index : size_t) : CJoint*                      % Renvoie le joint numéro index du bras
+  + computeFK() : Mat4                                      % Renvoie la matrice homgène de transformation de l'effecteur du bras
+  + get() : VectorXd                                        % Renvoie un vecteur contenant la valeur de chaques actionneurs du bras
+  + set(q : const VectorXd&) : void                         % Met le bras sur une position défini par un vecteur q 
+  + random() : VectorXd                                     % Met le bras sur une configuration aléatoire
+}
+
+CJoint <|-- CJointRevolute
+CJoint <|-- CJointPrismatic
+CBras *--> "0..*" CJoint : contient >
+
+@enduml
