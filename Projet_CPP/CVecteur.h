@@ -4,10 +4,10 @@
 #include <iostream>
 #include <Eigen/Dense>
 
-template<typename T, std::size_t N> // 
+template<typename T, std::size_t N> 
 class CVecteur {
 private:
-    std::array<T, N> data_; // 
+    std::array<T, N> data_;
 
 public:
     // Initialisation
@@ -49,8 +49,8 @@ public:
         return std::sqrt(this->dot(*this));
     }
 
-    // Conversion Eigen via Map (Zéro copie)
-    Eigen::Matrix<T, N, 1> toEigen() const { // 
+    // Conversion Eigen via Map
+    Eigen::Matrix<T, N, 1> toEigen() const { 
         return Eigen::Map<const Eigen::Matrix<T, N, 1>>(data_.data());
     }
 
