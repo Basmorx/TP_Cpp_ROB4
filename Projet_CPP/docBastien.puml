@@ -50,6 +50,22 @@ class CBras {
   + random() : VectorXd                                     % Met le bras sur une configuration aléatoire
 }
 
+class "CVecteur<T, N>" {
+  - data_ : std::array<T, N>
+
+  + CVecteur()                                               % Constructeur par défaut (remplit de 0)
+  + CVecteur(init : std::initializer_list<T>)                % Constructeur par liste d'initialisation
+  + operator[](i : std::size_t) : T&                         % Accès en lecture/écriture
+  + operator[](i : std::size_t) const : const T&             % Accès en lecture seule
+  + operator+(other : const CVecteur&) : CVecteur            % Addition vectorielle
+  + operator-(other : const CVecteur&) : CVecteur            % Soustraction vectorielle
+  + operator*(scalaire : T) : CVecteur                       % Multiplication par un scalaire
+  + dot(other : const CVecteur&) : T                         % Produit scalaire
+  + norm() : T                                               % Calcul de la norme euclidienne
+  + toEigen() : Eigen::Matrix<T, N, 1>                       % Conversion vers un type Matrix Eigen
+  + {static} friend operator<<(os : ostream&, v : const CVecteur&) : ostream& % Affichage flux
+}
+
 CJoint <|-- CJointRevolute
 CJoint <|-- CJointPrismatic
 CBras *--> "0..*" CJoint : contient >
